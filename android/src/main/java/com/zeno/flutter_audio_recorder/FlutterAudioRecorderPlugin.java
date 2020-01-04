@@ -151,7 +151,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     mSampleRate = Integer.parseInt(call.argument("sampleRate").toString());
     mFilePath = call.argument("path").toString();
     mExtension = call.argument("extension").toString();
-    bufferSize = AudioRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+    bufferSize = AudioRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT);
     mStatus = "initialized";
     HashMap<String, Object> initResult = new HashMap<>();
     initResult.put("duration", 0);
@@ -178,7 +178,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   }
 
   private void handleStart(MethodCall call, Result result) {
-    mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, mSampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+    mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, mSampleRate, AudioFormat.CHANNEL_IN_STEREO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
     try {
       mFileOutputStream = new FileOutputStream(getTempFilename());
     } catch (FileNotFoundException e) {
@@ -290,7 +290,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     long totalAudioLen = 0;
     long totalDataLen = totalAudioLen + 36;
     long longSampleRate = mSampleRate;
-    int channels = 1;
+    int channels = 2;
     long byteRate = RECORDER_BPP * mSampleRate * channels / 8;
 
     byte[] data = new byte[bufferSize];
@@ -401,7 +401,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   }
 
   private int getDuration(){
-    long duration = mDataSize / (mSampleRate * 2 * 1);
+    long duration = mDataSize / (mSampleRate * 2 * 2);
     return (int)duration;
   }
 }
